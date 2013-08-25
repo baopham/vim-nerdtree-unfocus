@@ -9,13 +9,13 @@ A shameless fork of [jistr/vim-nerdtree-tabs](https://github.com/jistr/vim-nerdt
 2.  Install the plugin **through Pathogen**:
 
         cd ~/.vim/bundle
-        git clone https://github.com/jistr/vim-nerdtree-tabs.git
+        git clone https://github.com/baopham/vim-nerdtree-unfocus.git
 
     Or **through Vundle**:
 
-        Bundle 'jistr/vim-nerdtree-tabs'
+        Bundle 'baopham/vim-nerdtree-unfocus'
 
     Or **through Janus**:
 
         cd ~/.janus
-        git clone https://github.com/jistr/vim-nerdtree-tabs.git
+        git clone https://github.com/baopham/vim-nerdtree-unfocus.git
