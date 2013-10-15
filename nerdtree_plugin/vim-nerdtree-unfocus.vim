@@ -91,18 +91,6 @@ endfun
 
 " }}}
 
-" s:CloseIfOnlyNerdTreeLeft() {{{
-"
-" Close all open buffers on entering a window if the only
-" buffer that's left is the NERDTree buffer
-fun! s:CloseIfOnlyNerdTreeLeft()
-  if exists("t:NERDTreeBufName") && bufwinnr(t:NERDTreeBufName) != -1 && winnr("$") == 1
-    q
-  endif
-endfun
-
-" }}}
-
 " s:IsCurrentWindowNERDTree() {{{
 "
 " returns 1 if current window is NERDTree, false otherwise
