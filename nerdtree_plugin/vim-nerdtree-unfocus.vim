@@ -1,5 +1,7 @@
-" === focus functions === {{{
+" === plugin functions === {{{
 
+" === focus functions === {{{
+"
 " s:NERDTreeFocus() {{{
 "
 " if the current window is NERDTree, move focus to the next window
@@ -10,7 +12,6 @@ fun! s:NERDTreeFocus()
 endfun
 
 " }}}
-
 " s:NERDTreeUnfocus() {{{
 "
 " if the current window is NERDTree, move focus to the next window
@@ -29,7 +30,16 @@ fun! s:NERDTreeUnfocus()
 endfun
 
 " }}}
+" s:NERDTreeRestoreFocus() {{{
+"
+" restore focus to the window that was focused before leaving current tab
+fun! s:NERDTreeRestoreFocus()
+  if exists("t:NERDTreeTabLastWindow")
+    exe t:NERDTreeTabLastWindow . "wincmd w"
+  endif
+endfun
 
+" }}}
 " s:SaveGlobalFocus() {{{
 "
 fun! s:SaveGlobalFocus()
@@ -37,7 +47,6 @@ fun! s:SaveGlobalFocus()
 endfun
 
 " }}}
-
 " s:IfFocusOnStartup() {{{
 "
 fun! s:IfFocusOnStartup()
@@ -45,11 +54,10 @@ fun! s:IfFocusOnStartup()
 endfun
 
 " }}}
-
+"
 " === focus functions === }}}
-
 " === utility functions === {{{
-
+"
 " s:NextNormalWindow() {{{
 "
 " find next window with a normal buffer
@@ -103,7 +111,6 @@ fun! s:IsCurrentWindowNERDTree()
 endfun
 
 " }}}
-
 " s:IsNERDTreeOpenInCurrentTab() {{{
 "
 " check if NERDTree is open in current tab
@@ -112,7 +119,6 @@ fun! s:IsNERDTreeOpenInCurrentTab()
 endfun
 
 " }}}
-
 " s:IsNERDTreePresentInCurrentTab() {{{
 "
 " check if NERDTree is present in current tab (not necessarily visible)
@@ -121,9 +127,8 @@ fun! s:IsNERDTreePresentInCurrentTab()
 endfun
 
 " }}}
-
+"
 " === utility functions === }}}
-
 " === NERDTree view manipulation (scroll and cursor positions) === {{{
 "
 " s:SaveNERDTreeViewIfPossible() {{{
@@ -143,7 +148,6 @@ fun! s:SaveNERDTreeViewIfPossible()
 endfun
 
 " }}}
-
 " s:RestoreNERDTreeViewIfPossible() {{{
 "
 fun! s:RestoreNERDTreeViewIfPossible()
@@ -173,7 +177,8 @@ endfun
 " }}}
 "
 " === NERDTree view manipulation (scroll and cursor positions) === }}}
-
+"
+" === plugin functions ===  }}}
 " === plugin event handlers === {{{
 "
 " s:LoadPlugin() {{{
@@ -182,8 +187,6 @@ fun! s:LoadPlugin()
   if exists('g:nerdtree_unfocus_loaded')
     return
   endif
-
-  let g:NERDTreeHijackNetrw = 0
 
   let s:disable_handlers_for_tabdo = 0
 
@@ -201,6 +204,7 @@ fun! s:LoadPlugin()
 
   augroup NERDTreeTabs
     autocmd!
+    autocmd TabEnter * call <SID>TabEnterHandler()
     autocmd TabLeave * call <SID>TabLeaveHandler()
     autocmd WinLeave * call <SID>WinLeaveHandler()
   augroup END
@@ -210,17 +214,17 @@ endfun
 
 " }}}
 
-" s:NewTabCreated {{{
+" s:TabEnterHandler() {{{
 "
-" A flag to indicate that a new tab has just been created.
-"
-" We will handle the remaining work for this newly created tab separately in
-" BufWinEnter event.
-"
-let s:NewTabCreated = 0
+fun! s:TabEnterHandler()
+  if s:disable_handlers_for_tabdo
+    return
+  endif
+
+  call s:NERDTreeRestoreFocus()
+endfun
 
 " }}}
-
 " s:TabLeaveHandler() {{{
 "
 fun! s:TabLeaveHandler()
@@ -233,11 +237,15 @@ endfun
 " s:WinLeaveHandler() {{{
 "
 fun! s:WinLeaveHandler()
+  if s:disable_handlers_for_tabdo
+    return
+  endif
+
   call s:SaveNERDTreeViewIfPossible()
 endfun
 
 " }}}
-
+"
 " === plugin event handlers === }}}
 
 call s:LoadPlugin()
